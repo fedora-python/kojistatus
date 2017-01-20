@@ -18,7 +18,8 @@ def status(username, *,
     Only the first page with maximum 50 results is fetched.
     """
     session = session or requests.Session()
-    url = '{}koji/tasks?owner={}&state=all'.format(kojiurl, username)
+    url = '{}koji/tasks?owner={}&state=all&?view=toplevel'.format(kojiurl,
+                                                                  username)
     response = session.get(url)
     response.raise_for_status()
     return _parse(response.text)
