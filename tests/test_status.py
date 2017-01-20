@@ -8,6 +8,16 @@ with betamax.Betamax.configure() as config:
     config.cassette_library_dir = 'tests/fixtures/cassettes'
 
 
+@pytest.mark.parametrize('kojiurl', ('https://koji.fedoraproject.org/',
+                                     'https://cbs.centos.org/',
+                                     'http://koji.rpmfusion.org/'))
+def test_different_kojis_work(betamax_parametrized_session, kojiurl):
+    username = 'churchyard' if 'fedoraproject' in kojiurl else 'kojira'
+    i = kojistatus.status(username, kojiurl=kojiurl,
+                          session=betamax_parametrized_session)
+    assert list(i)  # just test that something is there
+
+
 @pytest.fixture(params=('churchyard', 'pviktori'))
 def status_results(request, betamax_parametrized_session):
     return kojistatus.status(request.param,
