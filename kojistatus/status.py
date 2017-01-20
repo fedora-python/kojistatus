@@ -32,4 +32,4 @@ def _parse(html):
     ids = RE_ID.findall(html)
     statuses = RE_STATUS.findall(html)
     for idx, status in enumerate(statuses):
-        yield (ids[idx], status)
+        yield (int(ids[idx]), status)
