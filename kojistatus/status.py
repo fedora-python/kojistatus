@@ -1,6 +1,33 @@
-def status(username, count=50):
+import re
+
+import requests
+
+
+RE_ID = re.compile(r'<td>(\d+)</td>', re.ASCII)
+RE_STATUS = re.compile(r'<img class="stateimg" src="/koji-static/images/\w+.'
+                       r'png" title="(\w+)" alt="\w+"/>', re.ASCII)
+
+
+def status(username, *, kojiurl='https://koji.fedoraproject.org/'):
     """
-    For given username, return the last count builds with status information.
-    Returns a list of 2-tuples, sorted descending (the way Koji displays it).
+    For given username, return the last builds with status information.
+    Returns an iterable of 2-tuples, sorted descending.
+
+    Only the first page with maximum 50 results is fetched.
     """
-    ...
+    session = requests.Session()
+    url = '{}koji/tasks?owner={}&state=all'.format(kojiurl, username)
+    response = session.get(url)
+    response.raise_for_status()
+    return _parse(response.text)
+
+
+def _parse(html):
+    """
+    Parses the given HTML source using regular expressions (I know :P)
+    Returns status information for status()
+    """
+    ids = RE_ID.findall(html)
+    statuses = RE_STATUS.findall(html)
+    for idx, status in enumerate(statuses):
+        yield (ids[idx], status)
