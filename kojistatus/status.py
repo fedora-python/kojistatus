@@ -8,14 +8,16 @@ RE_STATUS = re.compile(r'<img class="stateimg" src="/koji-static/images/\w+.'
                        r'png" title="(\w+)" alt="\w+"/>', re.ASCII)
 
 
-def status(username, *, kojiurl='https://koji.fedoraproject.org/'):
+def status(username, *,
+           kojiurl='https://koji.fedoraproject.org/',
+           session=None):
     """
     For given username, return the last builds with status information.
     Returns an iterable of 2-tuples, sorted descending.
 
     Only the first page with maximum 50 results is fetched.
     """
-    session = requests.Session()
+    session = session or requests.Session()
     url = '{}koji/tasks?owner={}&state=all'.format(kojiurl, username)
     response = session.get(url)
     response.raise_for_status()

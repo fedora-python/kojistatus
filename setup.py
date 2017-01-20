@@ -17,6 +17,8 @@ setup(
     license='MIT',
     url='https://github.com/hroncok/'+NAME,
     install_requires=['requests'],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest>=3', 'betamax'],
     packages=find_packages(),
     classifiers=[
         'License :: OSI Approved :: MIT License',

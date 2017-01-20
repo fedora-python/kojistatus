@@ -1,2 +1,4 @@
 __*__
 *.egg-info
+.cache
+.eggs
