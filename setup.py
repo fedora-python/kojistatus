@@ -16,7 +16,7 @@ setup(
     keywords='koji fedora status',
     license='MIT',
     url='https://github.com/hroncok/' + NAME,
-    install_requires=['requests'],
+    install_requires=['requests', 'Flask'],
     setup_requires=['pytest-runner'],
     tests_require=['pytest>=3', 'betamax', 'pytest-flake8'],
     packages=find_packages(),
