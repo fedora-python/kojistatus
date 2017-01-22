@@ -1,3 +1,4 @@
 include LICENSE
 include pytest.ini
 recursive-include tests *.py *.json
+recursive-include example *.py
