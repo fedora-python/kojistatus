@@ -1,11 +1,6 @@
-import betamax
 import pytest
 
 import kojistatus
-
-
-with betamax.Betamax.configure() as config:
-    config.cassette_library_dir = 'tests/fixtures/cassettes'
 
 
 @pytest.mark.parametrize('kojiurl', ('https://koji.fedoraproject.org/',
