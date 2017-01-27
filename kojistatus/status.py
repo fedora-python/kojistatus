@@ -8,7 +8,7 @@ RE_STATUS = re.compile(r'<img class="stateimg" src="/koji-static/images/\w+.'
                        r'png" title="(\w+)" alt="\w+"/>', re.ASCII)
 
 
-def status(username, *,
+def status(username=None, *,
            kojiurl='https://koji.fedoraproject.org/',
            session=None):
     """
@@ -18,9 +18,14 @@ def status(username, *,
     Only the first page with maximum 50 results is fetched.
     """
     session = session or requests.Session()
-    url = '{}koji/tasks?owner={}&state=all&?view=toplevel'.format(kojiurl,
-                                                                  username)
-    response = session.get(url)
+    url = '{}koji/tasks'.format(kojiurl)
+    params = {
+        'state': 'all',
+        'view': 'toplevel'
+    }
+    if username:
+        params['owner'] = username
+    response = session.get(url, params=params)
     response.raise_for_status()
     return _parse(response.text)
 
