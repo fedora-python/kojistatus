@@ -8,7 +8,7 @@ NAME = 'kojistatus'
 
 setup(
     name=NAME,
-    version='0.1',
+    version='0.2',
     description='Fetches the last statuses of Fedora Koji builds',
     long_description=long_description,
     author='Miro Hrončok',
