@@ -13,7 +13,7 @@ def test_different_kojis_work(betamax_parametrized_session, kojiurl):
     assert list(i)  # just test that something is there
 
 
-@pytest.fixture(params=('churchyard', 'pviktori'))
+@pytest.fixture(params=('churchyard', 'pviktori', None))
 def status_results(request, betamax_parametrized_session):
     return kojistatus.status(request.param,
                              session=betamax_parametrized_session)
