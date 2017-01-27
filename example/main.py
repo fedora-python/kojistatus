@@ -52,11 +52,11 @@ def download_status(addr):
 
 
 COLORS = {
-    'free': (0, 0, 255),
-    'open': (255, 255, 0),
-    'failed': (255, 0, 0),
-    'canceled': (127, 0, 0),
-    'closed': (0, 255, 0),
+    'free': (0, 0, 255 // 10),
+    'open': (255 // 10, 255 // 10, 0),
+    'failed': (255 // 10, 0, 0),
+    'canceled': (127 // 10, 0, 0),
+    'closed': (0, 255 // 10, 0),
 }
 
 
