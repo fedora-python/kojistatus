@@ -45,3 +45,13 @@ def test_webapp_returns_statuses_for_all(testapp):
     print(body)
     lines = body.splitlines()
     assert len(lines) == 50
+
+
+@pytest.mark.parametrize('koji', ('centos', 'rpmfuison'))
+def test_webapp_with_different_kojis(testapp, koji):
+    # TODO spy it so we are sure what URL was fetched
+    response = testapp.get('/?koji=' + koji)
+    body = response.data.decode('utf-8')
+    print(body)
+    lines = body.splitlines()
+    assert len(lines) == 50
