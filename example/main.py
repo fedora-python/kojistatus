@@ -6,7 +6,7 @@ PIN_NUM = 2
 NUM_LEDS = 8
 SLEEP_TIME = 30
 HOST = 'kojistatus-hroncok.rhcloud.com'
-USERNAME = 'churchyard'
+USERNAME = None
 
 
 try:
@@ -29,7 +29,7 @@ except ImportError:
     np = FakeNeoPixel()
 
 
-PATH = USERNAME + '/'
+PATH = USERNAME + '/' if USERNAME else ''
 
 
 def download_status(addr):
