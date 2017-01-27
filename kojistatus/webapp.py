@@ -16,8 +16,9 @@ def session(app):
 app.__class__.session = session
 
 
+@app.route('/')
 @app.route('/<username>/')
-def main(username):
+def main(username=None):
     try:
         lines = ('{} {}'.format(*s) for s in status(username,
                                                     session=app.session()))

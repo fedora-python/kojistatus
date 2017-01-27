@@ -37,3 +37,11 @@ def test_webapp_returns_text_in_prescribed_format(response):
     task, status = lines[0].split()
     assert int(task) > 17340000
     assert len(status) > 2
+
+
+def test_webapp_returns_statuses_for_all(testapp):
+    response = testapp.get('/')
+    body = response.data.decode('utf-8')
+    print(body)
+    lines = body.splitlines()
+    assert len(lines) == 50
