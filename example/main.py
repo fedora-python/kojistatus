@@ -2,12 +2,20 @@ import utime as time
 import usocket as socket
 
 
+# User defined constants
 PIN_NUM = 2
 NUM_LEDS = 8
 SLEEP_TIME = 10
+PULSE_TIME = 0.15
 HOST = 'kojistatus-hroncok.rhcloud.com'
 USERNAME = 'churchyard'
-BRIGHTNES = 7  # 0-255
+BRIGHTNESS = 7  # 0-255
+PULSE_BRIGHTNESS = 50  # 0-255
+
+
+# Calculated constants
+PATH = USERNAME + '/' if USERNAME else ''
+PULSE_SLEEP_TIME = PULSE_TIME / (2 * (PULSE_BRIGHTNESS - BRIGHTNESS))
 
 
 try:
@@ -30,9 +38,6 @@ except ImportError:
     np = FakeNeoPixel()
 
 
-PATH = USERNAME + '/' if USERNAME else ''
-
-
 def download_status(addr):
     s = socket.socket()
     s.connect(addr)
@@ -52,17 +57,21 @@ def download_status(addr):
     yield from body.split('\n')
 
 
-def bright(r, g, b):
-    div = sum((r, g, b)) / BRIGHTNES
+def bright(rgb, brightness=BRIGHTNESS):
+    r, g, b = rgb
+    try:
+        div = sum(rgb) / brightness
+    except ZeroDivisionError:
+        return (0, 0, 0)
     return tuple(int(i) for i in (r / div, g / div, b / div))
 
 
 COLORS = {
-    'free': bright(0, 0, 255),
-    'open': bright(255, 255, 0),
-    'failed': bright(255, 0, 0),
-    'canceled': bright(30, 30, 30),
-    'closed': bright(0, 255, 0),
+    'free': bright((0, 0, 255)),
+    'open': bright((255, 255, 0)),
+    'failed': bright((255, 0, 0)),
+    'canceled': bright((30, 30, 30)),
+    'closed': bright((0, 255, 0)),
 }
 
 
@@ -83,6 +92,21 @@ def leds_off(write=False):
         np.write()
 
 
+def pulse(leds, colors):
+    def inner(brightness):
+        for color_idx, led in enumerate(leds):
+            np[led] = bright(colors[color_idx], brightness)
+        np.write()
+        time.sleep(PULSE_SLEEP_TIME)
+
+    for brightness in range(BRIGHTNESS, PULSE_BRIGHTNESS + 1):
+        inner(brightness)
+    for brightness in reversed(range(BRIGHTNESS, PULSE_BRIGHTNESS + 1)):
+        inner(brightness)
+
+    np.write()
+
+
 try:
     import network
 except ImportError:
@@ -91,9 +115,9 @@ else:
     wlan = network.WLAN(network.STA_IF)
     counter = 0
     while not wlan.isconnected():
-        leds_off()
-        np[counter] = bright(0, 0, 255)
-        np.write()
+        if not counter:
+            leds_off()
+        pulse((counter,), ((0, 0, 255),))
         counter += 1
         counter %= NUM_LEDS
         time.sleep(1)
