@@ -10,7 +10,7 @@ PULSE_TIME = 0.15
 HOST = 'kojistatus-hroncok.rhcloud.com'
 USERNAME = 'churchyard'
 BRIGHTNESS = 7  # 0-255
-PULSE_BRIGHTNESS = 50  # 0-255
+PULSE_BRIGHTNESS = 32  # 0-255; > BRIGHTNESS
 
 
 # Calculated constants
@@ -67,22 +67,22 @@ def bright(rgb, brightness=BRIGHTNESS):
 
 
 COLORS = {
-    'free': bright((0, 0, 255)),
-    'open': bright((255, 255, 0)),
-    'failed': bright((255, 0, 0)),
-    'canceled': bright((30, 30, 30)),
-    'closed': bright((0, 255, 0)),
+    'free': (0, 0, 255),
+    'open': (255, 255, 0),
+    'failed': (255, 0, 0),
+    'canceled': (30, 30, 30),
+    'closed': (0, 255, 0),
 }
 
 
-def last_colors(num):
+def latest_builds(num):
     ai = socket.getaddrinfo(HOST, 80)
     addr = ai[0][-1]
     for idx, line in enumerate(download_status(addr)):
         if idx == num:
             break
-        _, status = line.split()
-        yield COLORS[status]
+        taskid, status = line.split()
+        yield int(taskid), status
 
 
 def leds_off(write=False):
@@ -124,11 +124,24 @@ else:
     leds_off(write=True)
 
 
+last = {}
 while True:
+    current = {}
+    pulse_leds = []
+    pulse_colors = []
     try:
-        for led, color in enumerate(last_colors(NUM_LEDS)):
+        for led, build in enumerate(latest_builds(NUM_LEDS)):
+            taskid, status = build
+            current[taskid] = status
+            color = bright(COLORS[status])
+            if taskid not in last or last[taskid] != status:
+                pulse_leds.append(led)
+                pulse_colors.append(color)
             np[led] = color
         np.write()
+        if pulse_leds:
+            pulse(pulse_leds, pulse_colors)
+        last = current
     except:
         pass
     time.sleep(SLEEP_TIME)
