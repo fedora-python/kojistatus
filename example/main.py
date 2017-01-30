@@ -4,9 +4,10 @@ import usocket as socket
 
 PIN_NUM = 2
 NUM_LEDS = 8
-SLEEP_TIME = 30
+SLEEP_TIME = 10
 HOST = 'kojistatus-hroncok.rhcloud.com'
-USERNAME = None
+USERNAME = 'churchyard'
+BRIGHTNES = 7  # 0-255
 
 
 try:
@@ -51,12 +52,17 @@ def download_status(addr):
     yield from body.split('\n')
 
 
+def bright(r, g, b):
+    div = sum((r, g, b)) / BRIGHTNES
+    return tuple(int(i) for i in (r / div, g / div, b / div))
+
+
 COLORS = {
-    'free': (0, 0, 255 // 10),
-    'open': (255 // 10, 255 // 10, 0),
-    'failed': (255 // 10, 0, 0),
-    'canceled': (127 // 10, 0, 0),
-    'closed': (0, 255 // 10, 0),
+    'free': bright(0, 0, 255),
+    'open': bright(255, 255, 0),
+    'failed': bright(255, 0, 0),
+    'canceled': bright(30, 30, 30),
+    'closed': bright(0, 255, 0),
 }
 
 
@@ -70,7 +76,30 @@ def last_colors(num):
         yield COLORS[status]
 
 
-time.sleep(20)  # Give it a time to connect
+def leds_off(write=False):
+    for led in range(NUM_LEDS):
+        np[led] = (0, 0, 0)
+    if write:
+        np.write()
+
+
+try:
+    import network
+except ImportError:
+    pass
+else:
+    wlan = network.WLAN(network.STA_IF)
+    counter = 0
+    while not wlan.isconnected():
+        leds_off()
+        np[counter] = bright(0, 0, 255)
+        np.write()
+        counter += 1
+        counter %= NUM_LEDS
+        time.sleep(1)
+    leds_off(write=True)
+
+
 while True:
     try:
         for led, color in enumerate(last_colors(NUM_LEDS)):
