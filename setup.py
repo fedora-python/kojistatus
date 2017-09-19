@@ -15,7 +15,7 @@ setup(
     author_email='miro@hroncok.cz',
     keywords='koji fedora status',
     license='MIT',
-    url='https://github.com/hroncok/' + NAME,
+    url='https://github.com/fedora-python/' + NAME,
     install_requires=['requests', 'Flask'],
     setup_requires=['pytest-runner'],
     tests_require=['pytest>=3', 'betamax', 'pytest-flake8'],
