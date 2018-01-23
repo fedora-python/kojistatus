@@ -17,7 +17,7 @@ app.__class__.session = session
 
 
 @app.route('/')
-@app.route('/<username>/')
+@app.route('/<path:username>/')
 def main(username=None):
     koji = request.args.get('koji')
     if koji == 'centos':
