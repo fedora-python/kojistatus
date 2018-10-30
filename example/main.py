@@ -142,6 +142,6 @@ while True:
         if pulse_leds:
             pulse(pulse_leds, pulse_colors)
         last = current
-    except:
+    except Exception:
         pass
     time.sleep(SLEEP_TIME)
