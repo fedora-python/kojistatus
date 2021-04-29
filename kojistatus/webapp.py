@@ -22,7 +22,7 @@ def main(username=None):
     koji = request.args.get('koji')
     if koji == 'centos':
         kojiurl = 'https://cbs.centos.org/'
-    elif koji == 'rpmfuison':
+    elif koji == 'rpmfusion':
         kojiurl = 'http://koji.rpmfusion.org/'
     else:
         kojiurl = None
