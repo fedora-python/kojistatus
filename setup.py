@@ -18,7 +18,11 @@ setup(
     url='https://github.com/fedora-python/' + NAME,
     install_requires=['requests', 'Flask'],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest>=3', 'betamax', 'pytest-flake8'],
+    extras_require={
+        # flake8 5.0+ is not compatible with pytest-flake8
+        # see https://github.com/tholo/pytest-flake8/issues/87
+        "tests": ['pytest>=3', 'betamax', 'pytest-flake8', 'flake8<5']
+    },
     packages=find_packages(),
     classifiers=[
         'Development Status :: 3 - Alpha',
