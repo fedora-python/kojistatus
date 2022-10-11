@@ -1,6 +1,6 @@
 from flask import Flask, Response, request
-from flask.helpers import NotFound
 from requests.exceptions import HTTPError
+from werkzeug.exceptions import NotFound
 
 from .status import status
 
