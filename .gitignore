@@ -4,3 +4,5 @@ __*__
 .eggs
 /build
 /dist
+.tox
+.pytest_cache
