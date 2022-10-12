@@ -16,6 +16,9 @@ def session(app):
 app.__class__.session = session
 
 
+# We need to explicitly define both possible user
+# URLs because the automatic redirect does not work.
+# See https://github.com/pallets/werkzeug/issues/2533
 @app.route('/')
 @app.route('/<path:username>')
 @app.route('/<path:username>/')
