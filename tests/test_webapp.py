@@ -19,10 +19,18 @@ def test_webapp_returns_200_for_good_username(response):
     assert response.status_code == 200
 
 
-def test_webapp_redirects_without_trailing_slash(testapp):
+def test_webapp_works_with_and_without_trailing_slash(testapp):
     response = testapp.get('/churchyard')
-    assert response.status_code // 100 == 3
-    assert response.headers['Location'].endswith('/churchyard/')
+    assert response.status_code == 200
+    response_with_trailing_slash = testapp.get('/churchyard/')
+    assert response_with_trailing_slash.status_code == 200
+
+
+def test_webapp_works_with_slash_in_username(testapp):
+    response = testapp.get('/mbs/mbs.fedoraproject.org')
+    assert response.status_code == 200
+    response_with_trailing_slash = testapp.get('/mbs/mbs.fedoraproject.org/')
+    assert response_with_trailing_slash.status_code == 200
 
 
 def test_webapp_returns_404_for_bad_username(testapp):
