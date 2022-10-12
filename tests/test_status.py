@@ -3,11 +3,15 @@ import pytest
 import kojistatus
 
 
-@pytest.mark.parametrize('kojiurl', ('https://koji.fedoraproject.org/',
-                                     'https://cbs.centos.org/',
-                                     'http://koji.rpmfusion.org/'))
-def test_different_kojis_work(betamax_parametrized_session, kojiurl):
-    username = 'churchyard' if 'fedoraproject' in kojiurl else 'kojira'
+@pytest.mark.parametrize(
+    ('kojiurl', 'username'),
+    (
+        ('https://koji.fedoraproject.org/', 'churchyard'),
+        ('https://cbs.centos.org/', 'cbs-kojira'),
+        ('http://koji.rpmfusion.org/', 'kojira')
+    )
+)
+def test_different_kojis_work(betamax_parametrized_session, kojiurl, username):
     i = kojistatus.status(username, kojiurl=kojiurl,
                           session=betamax_parametrized_session)
     assert list(i)  # just test that something is there
