@@ -24,6 +24,7 @@ def test_webapp_works_with_and_without_trailing_slash(testapp):
     assert response.status_code == 200
     response_with_trailing_slash = testapp.get('/churchyard/')
     assert response_with_trailing_slash.status_code == 200
+    assert response.text == response_with_trailing_slash.text
 
 
 def test_webapp_works_with_slash_in_username(testapp):
