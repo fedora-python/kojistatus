@@ -7,7 +7,8 @@ PIN_NUM = 2
 NUM_LEDS = 8
 SLEEP_TIME = 10
 PULSE_TIME = 0.15
-HOST = 'peaceful-wildwood-66302.herokuapp.com'
+HOST = 'vps.frenzy.cz'
+PORT = 8080
 USERNAME = 'churchyard'
 BRIGHTNESS = 7  # 0-255
 PULSE_BRIGHTNESS = 32  # 0-255; > BRIGHTNESS
@@ -76,7 +77,7 @@ COLORS = {
 
 
 def latest_builds(num):
-    ai = socket.getaddrinfo(HOST, 80)
+    ai = socket.getaddrinfo(HOST, PORT)
     addr = ai[0][-1]
     for idx, line in enumerate(download_status(addr)):
         if idx == num:
